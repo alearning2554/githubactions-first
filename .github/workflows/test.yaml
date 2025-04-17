@@ -4,8 +4,22 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: displaying hello
-        run: echo "release_tag=0.0.1" >> $GITHUB_ENV
+      - name: Get tags
+        shell: bash
+        run: |
+          git fetch --tags origin
+    # Retrieve version from latest-build.version file
+      - name: Retrieve Version
+        shell: bash
+        id: latest_version
+        run: |
+          echo "VERSION_NAME=$(cat latest-build.version)" >> $GITHUB_OUTPUT
+ 
+    # Evaluate and set release_tag
+      - name: Get version
+        shell: bash
+        run: |
+            echo "release_tag=${{ steps.latest_version.outputs.VERSION_NAME }}-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: printing release tag
         uses: alearning2554/githubactions-first/.github/actions/test@main
         with:
