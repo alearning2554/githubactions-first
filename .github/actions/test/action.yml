@@ -8,4 +8,5 @@ runs:
   using: 'composite'
   steps:
     - name: print release version
+      shell: bash
       run: echo ${{ inputs.RELEASE_VERSION }}
