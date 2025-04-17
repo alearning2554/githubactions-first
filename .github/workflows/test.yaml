@@ -10,16 +10,11 @@ jobs:
         shell: bash
         run: |
           git fetch --tags origin
-      - name: version
-        shell: bash
-        id: latest_v
-        run: |
-          echo "VERSION=$(cat latest-build.version)" >> $GITHUB_OUTPUT
 
       - name: version name
         shell: bash
         run: |
-            echo "release_tag=${{ steps.latest_v.outputs.VERSION }}-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+            echo "release_tag=-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: printing release tag
         uses: alearning2554/githubactions-first/.github/actions/test@main
         with:
