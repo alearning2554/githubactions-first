@@ -7,4 +7,6 @@ jobs:
       - name: displaying hello
         run: echo "release_tag=0.0.1" >> $GITHUB_ENV
       - name: printing release tag
-        run: echo "${release_tag}"
+        uses: alearning2554/githubactions-first/.github/actions/test@main
+        with:
+          RELEASE_VERSION: ${release_tag}
