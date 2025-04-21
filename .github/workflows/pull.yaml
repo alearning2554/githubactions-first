@@ -1,4 +1,4 @@
-name: pulling image
+name: running docker image
 on: 
   workflow_dispatch:
     inputs:
