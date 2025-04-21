@@ -32,4 +32,4 @@ jobs:
       - name: Build and push docker image
         run: |
           docker build -f ./Dockerfile -t ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ inputs.tag }} .
-          docker push ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ inputs.tag }} .
+          docker push ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ inputs.tag }}
