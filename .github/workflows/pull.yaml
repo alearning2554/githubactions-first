@@ -24,8 +24,8 @@ jobs:
       - name: retriving the version
         run: |
           version=$(cat VERSION)
-          echo "version=$version" >> GITHUB_ENV
-          echo "version is: $version"
+          echo "version=$version" >> $GITHUB_ENV
+          echo "version is: ${{ env.version }}"
       - name: Docker login to Jfrod artifactory
         run: |
           docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
