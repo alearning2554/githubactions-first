@@ -1,21 +1,28 @@
 name: first-workflow
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      reponame:
+        description: "repo name"
+        default: "test"
+        required: true
+      appname:
+        description: "app name"
+        default: "test"
+        required: true
+      tag:
+        description: "docker tag"
+        default: 0.0.1
+        required: true
+env:
+  reponame: ${{ inputs.reponame }}
+  appname: ${{ inputs.appname }}
+  tag: ${{ inputs.tag }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: tag
-        shell: bash
-        run: |
-          git fetch --tags origin
-
-      - name: version name
-        shell: bash
-        run: |
-            echo "release_tag=-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-      - name: printing release tag
-        uses: alearning2554/githubactions-first/.github/actions/test@main
-        with:
-          RELEASE_VERSION: ${release_tag}
+      
