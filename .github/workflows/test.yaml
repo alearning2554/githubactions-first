@@ -18,6 +18,7 @@ env:
   reponame: ${{ inputs.reponame }}
   appname: ${{ inputs.appname }}
   tag: ${{ inputs.tag }}
+  jfrog_url: "artifactory987.jfrog.io"
 
 jobs:
   test:
@@ -25,4 +26,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+      - name: Docker login to Jfrod artifactory
+        run: |
+          docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
