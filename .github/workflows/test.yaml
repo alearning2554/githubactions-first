@@ -18,6 +18,8 @@ env:
   repopath: ${{ inputs.repopath }}
   appname: ${{ inputs.appname }}
   jfrog_url: "artifactory987.jfrog.io"
+permissions:
+  contents: write # This grants the token write access to your repository
 
 jobs:
   test:
