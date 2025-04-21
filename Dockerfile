@@ -1,2 +1,2 @@
 FROM ubuntu
-RUN echo "Vijay"
+CMD echo "Vijay"
