@@ -1,2 +1,2 @@
 FROM ubuntu
-CMD echo "Vijay"
+CMD echo "Vijay Reddy"
