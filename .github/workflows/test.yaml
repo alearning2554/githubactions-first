@@ -2,9 +2,9 @@ name: first-workflow
 on: 
   workflow_dispatch:
     inputs:
-      reponame:
+      repopath:
         description: "repo name"
-        default: "test"
+        default: "dockertest-docker"
         required: true
       appname:
         description: "app name"
@@ -15,7 +15,7 @@ on:
         default: 0.0.1
         required: true
 env:
-  reponame: ${{ inputs.reponame }}
+  repopath: ${{ inputs.repopath }}
   appname: ${{ inputs.appname }}
   tag: ${{ inputs.tag }}
   jfrog_url: "artifactory987.jfrog.io"
@@ -29,3 +29,7 @@ jobs:
       - name: Docker login to Jfrod artifactory
         run: |
           docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
+      - name: Build and push docker image
+        run: |
+          docker build -f ./Dockerfile -t ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ inputs.tag }} .
+          docker push ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ inputs.tag }} .
