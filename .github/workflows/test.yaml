@@ -10,14 +10,13 @@ on:
         description: "app name"
         default: "test"
         required: true
-      tag:
-        description: "docker tag"
-        default: 0.0.2
+      increment_type:
+        description: "Type of version increment (major, minor, patch)"
+        default: "patch"
         required: true
 env:
   repopath: ${{ inputs.repopath }}
   appname: ${{ inputs.appname }}
-  tag: ${{ inputs.tag }}
   jfrog_url: "artifactory987.jfrog.io"
 
 jobs:
@@ -26,6 +25,35 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: getting version
+        id: versioning
+        run: |
+          # Read the current version from the VERSION file
+          if [[ -f VERSION ]]; then
+            CURRENT_VERSION=$(cat VERSION)
+          else
+            echo "VERSION file not found, initializing with 0.0.0"
+            CURRENT_VERSION="0.0.0"
+          fi
+          echo "Current version: ${CURRENT_VERSION}"
+
+          # Increment the patch version
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          if [[ "$INCREMENT_TYPE" == "MAJOR" ]]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ "$INCREMENT_TYPE" == "MINOR" ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else # Default to PATCH
+            PATCH=$((PATCH + 1))
+          fi
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "New version: ${NEW_VERSION}"
+
+          # Export as environment variables for later steps
+          echo "version=${NEW_VERSION}" >> $GITHUB_ENV
       - name: Docker login to Jfrod artifactory
         run: |
           docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
@@ -33,3 +61,12 @@ jobs:
         run: |
           docker build -f ./Dockerfile -t ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ inputs.tag }} .
           docker push ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ inputs.tag }}
+      - name: Commit Updated Version
+        if: success()  # Only run this step if all previous steps are successful
+        run: |
+          echo "${{ env.version }}" > VERSION
+          git config user.name "alearning2554"
+          git config user.email "learningcloud4@gmail.com"
+          git add VERSION
+          git commit -m "Increment version to ${{ env.version }}"
+          git push origin HEAD:${{ github.ref_name }}
