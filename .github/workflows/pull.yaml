@@ -10,14 +10,9 @@ on:
         description: "app name"
         default: "test"
         required: true
-      tag:
-        description: "docker tag"
-        default: 0.0.2
-        required: true
 env:
   repopath: ${{ inputs.repopath }}
   appname: ${{ inputs.appname }}
-  tag: ${{ inputs.tag }}
   jfrog_url: "artifactory987.jfrog.io"
 
 jobs:
@@ -26,9 +21,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: retriving the version
+        run: |
+          version=$(cat VERSION)
+          echo "version=$version" >> GITHUB.ENV
+          echo "version is: $version"
       - name: Docker login to Jfrod artifactory
         run: |
           docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
       - name: Build and push docker image
         run: |
-          docker run artifactory987.jfrog.io/dockertest-docker/test:0.0.2
+          docker run artifactory987.jfrog.io/dockertest-docker/test:$version
