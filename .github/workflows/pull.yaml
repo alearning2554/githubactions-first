@@ -1,4 +1,4 @@
-name: first-workflow
+name: pulling image
 on: 
   workflow_dispatch:
     inputs:
