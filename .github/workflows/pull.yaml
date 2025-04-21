@@ -1,0 +1,34 @@
+name: first-workflow
+on: 
+  workflow_dispatch:
+    inputs:
+      repopath:
+        description: "repo name"
+        default: "dockertest-docker"
+        required: true
+      appname:
+        description: "app name"
+        default: "test"
+        required: true
+      tag:
+        description: "docker tag"
+        default: 0.0.2
+        required: true
+env:
+  repopath: ${{ inputs.repopath }}
+  appname: ${{ inputs.appname }}
+  tag: ${{ inputs.tag }}
+  jfrog_url: "artifactory987.jfrog.io"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Docker login to Jfrod artifactory
+        run: |
+          docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
+      - name: Build and push docker image
+        run: |
+          docker run artifactory987.jfrog.io/dockertest-docker/test:0.0.2
