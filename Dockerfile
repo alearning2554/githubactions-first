@@ -1,4 +1,4 @@
-FROM centos
+FROM centos:centos7
 LABEL owner="Vijay" \
       version="1.0"
 RUN yum  install httpd -y && echo "This is my custom httpd docker image" > /var/www/html/index.html
