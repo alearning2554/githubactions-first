@@ -11,7 +11,7 @@ on:
         default: "test"
         required: true
       increment_type:
-        description: "Type of version increment (major, minor, patch)"
+        description: " Type of version increment (major, minor, patch)"
         default: "patch"
         required: true
         type: choice
