@@ -56,9 +56,13 @@ jobs:
 
           # Export as environment variables for later steps
           echo "version=${NEW_VERSION}" >> $GITHUB_ENV
-      - name: Docker login to Jfrod artifactory
-        run: |
-          docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
+      # - name: Docker login to Jfrod artifactory
+      #   run: |
+      #     docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
+      - name: docker login to jford artifactory
+        uses: ./.github/actions/dokcer-login
+        with:
+          jfrog_url: ${{ env.jfrog_url }}
       - name: Build and push docker image
         run: |
           docker build -f ./Dockerfile -t ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ env.version }} .
