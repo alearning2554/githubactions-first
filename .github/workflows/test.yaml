@@ -71,7 +71,7 @@ jobs:
       #     username: "${{ secrets.USERNAME }}"
       #     password: "${{ secrets.PASSWORD }}"
       - name: docker login to jfrog artifactory
-        uses: alearning2554/githubactions-first/.github/actions/docker-login
+        uses: alearning2554/githubactions-first/.github/actions/docker-login/action.yaml
         with:
           jfrog_url: ${{ env.jfrog_url }}
           username: "${{ secrets.USERNAME }}"
