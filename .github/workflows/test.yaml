@@ -1,24 +1,22 @@
 name: first-workflow
 on: 
-  workflow_dispatch:
+  workflow_call:
     inputs:
       repopath:
         description: "repo name "
         default: "dockertest-docker"
         required: true
+        type: string
       appname:
         description: "app name"
         default: "test"
         required: true
+        type: string
       increment_type:
         description: " Type of version increment (major, minor, patch)"
-        default: "patch"
         required: true
-        type: choice
-        options:
-          - 'major'
-          - 'minor'
-          - 'patch'
+        type: string
+        default: 'patch'
 env:
   repopath: ${{ inputs.repopath }}
   appname: ${{ inputs.appname }}
