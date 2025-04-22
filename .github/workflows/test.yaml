@@ -64,8 +64,14 @@ jobs:
       # - name: Docker login to Jfrod artifactory
       #   run: |
       #     docker login -u "${{ secrets.USERNAME }}" -p "${{ secrets.PASSWORD }}" ${{ env.jfrog_url }}
-      - name: docker login to jford artifactory
-        uses: ./.github/actions/docker-login
+      # - name: docker login to jford artifactory
+      #   uses: ./.github/actions/docker-login
+      #   with:
+      #     jfrog_url: ${{ env.jfrog_url }}
+      #     username: "${{ secrets.USERNAME }}"
+      #     password: "${{ secrets.PASSWORD }}"
+      - name: docker login to jfrog artifactory
+        uses: alearning2554/githubactions-first/.github/actions/docker-login
         with:
           jfrog_url: ${{ env.jfrog_url }}
           username: "${{ secrets.USERNAME }}"
