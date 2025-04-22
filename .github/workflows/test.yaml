@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       repopath:
-        description: "repo name"
+        description: "repo name "
         default: "dockertest-docker"
         required: true
       appname:
