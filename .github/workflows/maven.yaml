@@ -22,7 +22,7 @@ jobs:
       # Step 3: Build and Test
       - name: Build and Test
         run: |
-          mvn clean install --settings settings.xml \
+          mvn clean package --settings settings.xml \
             -Dartifactory.username=${{ secrets.USERNAME }} \
             -Dartifactory.password=${{ secrets.PASSWORD }}
 
