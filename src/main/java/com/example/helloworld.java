@@ -1,6 +1,6 @@
 package com.example;
 
-public class HelloWorld {
+public class helloworld {
     public static String getMessage() {
         return "Hello, World!";
     }
