@@ -1,0 +1,89 @@
+name: Build and Deploy to JFrog Artifactory with Docker
+
+on:
+  workflow_dispatch:
+    inputs:
+      INCREMENT_TYPE:
+        description: "increment type: major, minor, patch"
+        type: choice
+        default: 'patch'
+        options:
+          - 'major'
+          - 'minor'
+          - 'patch'
+
+
+env:
+  jfrog_url: "artifactory987.jfrog.io"
+  repopath: "maven-docker"
+  appname: "test"
+
+permissions:
+  contents: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set Up JDK
+      - name: Set Up Java Environment
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      # Step 3: Build and Test
+      - name: Build and Test
+        run: |
+          mvn clean package --settings settings.xml \
+            -Dartifactory.username=${{ secrets.USERNAME }} \
+            -Dartifactory.password=${{ secrets.PASSWORD }}
+      - name: retriving version
+        run: |
+          # Read the current version from the VERSION file
+          if [[ -f VERSION ]]; then
+            CURRENT_VERSION=$(cat VERSION)
+          else
+            echo "VERSION file not found, initializing with 0.0.0"
+            CURRENT_VERSION="0.0.0"
+          fi
+          echo "Current version: ${CURRENT_VERSION}"
+
+          # Increment the patch version
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          if [[ "$INCREMENT_TYPE" == "MAJOR" ]]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ "$INCREMENT_TYPE" == "MINOR" ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else # Default to PATCH
+            PATCH=$((PATCH + 1))
+          fi
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "New version: ${NEW_VERSION}"
+
+          # Export as environment variables for later steps
+          echo "version=${NEW_VERSION}" >> $GITHUB_ENV
+      - name: Docker logging to Jfrog
+        run: |
+          docker login -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }} ${{ env.jfrog_url }}
+      - name: Building docker image
+        run: |
+          docker build -f ./Dockerfile -t ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ env.version }} .
+          docker push ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ env.version }}
+      - name: Commit Updated Version
+        if: success()  # Only run this step if all previous steps are successful
+        run: |
+          echo "${{ env.version }}" > VERSION
+          git config user.name "alearning2554"
+          git config user.email "learningcloud4@gmail.com"
+          git add VERSION
+          git commit -m "Increment version to ${{ env.version }}"
+          git push origin HEAD:${{ github.ref_name }}
