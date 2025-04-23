@@ -37,11 +37,11 @@
     <distributionManagement>
         <repository>
             <id>jfrog-release-repo</id>
-            <url>https://artifactoy987.jfrog.io/artifactory/libs-release-local</url>
+            <url>https://artifactory987.jfrog.io/artifactory/practice-libs-release/</url>
         </repository>
         <snapshotRepository>
             <id>jfrog-snapshot-repo</id>
-            <url>https://artifactoy987.jfrog.io/artifactory/libs-snapshot-local</url>
+            <url>https://artifactory987.jfrog.io/artifactory/practice-libs-snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
