@@ -1,9 +1,7 @@
 name: Build and Deploy to JFrog Artifactory
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch
 
 jobs:
   build-deploy:
@@ -25,12 +23,12 @@ jobs:
       - name: Build and Test
         run: |
           mvn clean install --settings settings.xml \
-            -Dartifactory.username=${{ secrets.ARTIFACTORY_USERNAME }} \
-            -Dartifactory.password=${{ secrets.ARTIFACTORY_PASSWORD }}
+            -Dartifactory.username=${{ secrets.USERNAME }} \
+            -Dartifactory.password=${{ secrets.PASSWORD }}
 
       # Step 4: Deploy Artifacts to JFrog Artifactory
       - name: Deploy to JFrog Artifactory
         run: |
           mvn deploy --settings settings.xml \
-            -Dartifactory.username=${{ secrets.ARTIFACTORY_USERNAME }} \
-            -Dartifactory.password=${{ secrets.ARTIFACTORY_PASSWORD }}
+            -Dartifactory.username=${{ secrets.USERNAME }} \
+            -Dartifactory.password=${{ secrets.PASSWORD }}
