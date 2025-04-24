@@ -118,7 +118,7 @@ jobs:
           gcloud container clusters get-credentials ${{ env.cluster_name }} --region ${{ env.region }} --project ${{ inputs.project_id }}
       - name: deploying application
         run: |
-          
+          echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
           sed -i "s#image_name#${{ env.IMAGE }}#g" k8s/deployment.yaml
           kubectl apply -f k8s/*
           kubectl rollout status deployment myapp
