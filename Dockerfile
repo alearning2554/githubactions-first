@@ -4,11 +4,11 @@ FROM eclipse-temurin:11-jre-focal
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the built JAR file from the Maven build stage
+# Dynamically copy the JAR file using a wildcard (passed from build context)
 COPY target/*.jar app.jar
 
-# Expose the port your application runs on (adjust if needed)
+# Expose the port your application runs on
 EXPOSE 8080
 
 # Command to run your application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
