@@ -92,7 +92,7 @@ jobs:
           version: '>= 363.0.0'
       - name: listing buckets
         run: |
-          gcloud info
+          gcloud storage buckets list
       - name: Commit Updated Version
         if: success()  # Only run this step if all previous steps are successful
         run: |
