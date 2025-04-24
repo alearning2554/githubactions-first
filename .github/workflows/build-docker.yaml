@@ -134,6 +134,12 @@ jobs:
         run: |
           echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
           gcloud container clusters get-credentials ${{ env.cluster_name }} --region ${{ env.region }} --project ${{ inputs.project_id }}
+      - name: creating kubernets secret contains jfrod artifactory details
+        run: |
+          kubectl create secret docker-registry jfrog-docker-secret \
+            --docker-server=artifactory987.jfrog.io \
+            --docker-username=${{ env.USERNAME }} \
+            --docker-password=${{ env.PASSWORD }}
       - name: deploying application
         run: |
           sed -i "s#image_name#${{ env.IMAGE }}#g" k8s/deployment.yaml
