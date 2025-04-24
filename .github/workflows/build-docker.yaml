@@ -86,7 +86,16 @@ jobs:
       #     docker login -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }} ${{ env.jfrog_url }}
       - name: Install gke-gcloud-auth-plugin
         run: |
-          sudo apt-get update && sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
+          # Add Google's official GCP package repository
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+          # Import the GCP public key
+          sudo apt-get install -y apt-transport-https ca-certificates gnupg
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+          sudo apt-get update
+
+          # Install the gke-gcloud-auth-plugin
+          sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
       - name: Configure environment to use GKE plugin
         run: |
           echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
