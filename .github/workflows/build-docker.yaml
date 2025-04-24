@@ -11,6 +11,11 @@ on:
           - 'major'
           - 'minor'
           - 'patch'
+      project_id:
+        description: "gcp project id"
+        type: string
+        default: "composer-456306"
+        required: true
 
 
 env:
