@@ -16,7 +16,7 @@ on:
 env:
   jfrog_url: "artifactory987.jfrog.io"
   repopath: "maven-docker"
-  appname: "test"
+  appname: "maven"
 
 permissions:
   contents: write
