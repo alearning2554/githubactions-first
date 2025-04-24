@@ -22,6 +22,8 @@ env:
   jfrog_url: "artifactory987.jfrog.io"
   repopath: "maven-docker"
   appname: "maven"
+  cluster_name: "autopilot-cluster-1"
+  region: "us-central1"
 
 permissions:
   contents: write
@@ -107,8 +109,19 @@ jobs:
           docker login -u ${{ env.USERNAME }} -p ${{ env.PASSWORD }} ${{ env.jfrog_url }}
       - name: Building docker image
         run: |
-          docker build -f ./Dockerfile -t ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ env.version }} .
-          docker push ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ env.version }}
+          IMAGE_NAME="${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ env.version }}"
+          docker build -f ./Dockerfile -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
+          echo "IMAGE=$IMAGE_NAME" >> $GITHUB_ENV
+      - name: connecting with cluster
+        run: |
+          gcloud container clusters get-credentials ${{ env.cluster_name }} --region ${{ env.region }} --project ${{ inputs.project_id }}
+      - name: deploying application
+        run: |
+          
+          sed -i "s/image_name/${{ env.IMAGE }}/g" deployment.yaml
+          kubectl apply -f k8s/*
+          kubectl rollout status deployment myapp
       - name: Commit Updated Version
         if: success()  # Only run this step if all previous steps are successful
         run: |
