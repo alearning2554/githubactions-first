@@ -113,9 +113,9 @@ jobs:
           docker build -f ./Dockerfile -t $IMAGE_NAME .
           docker push $IMAGE_NAME
           echo "IMAGE=$IMAGE_NAME" >> $GITHUB_ENV
-      - name: connecting with cluster
-        run: |
-          gcloud container clusters get-credentials ${{ env.cluster_name }} --region ${{ env.region }} --project ${{ inputs.project_id }}
+      # - name: connecting with cluster
+      #   run: |
+      #     gcloud container clusters get-credentials ${{ env.cluster_name }} --region ${{ env.region }} --project ${{ inputs.project_id }}
       - name: deploying application
         run: |
           
