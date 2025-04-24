@@ -82,6 +82,15 @@ jobs:
       # - name: Docker logging to Jfrog
       #   run: |
       #     docker login -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }} ${{ env.jfrog_url }}
+      - name: Authenticating to gcp
+        uses:  'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/829709831356/locations/global/workloadIdentityPools/github-workload-identity-pool/providers/github-provider'
+          service_account: 'githubactions-sa@composer-456306.iam.gserviceaccount.com'
+      - name: setup gcloud
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
       - name: retrieving secrets from secret manager
         id: 'secrets'
         uses: 'google-github-actions/get-secretmanager-secrets@v2'
@@ -100,18 +109,6 @@ jobs:
         run: |
           docker build -f ./Dockerfile -t ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ env.version }} .
           docker push ${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}:${{ env.version }}
-      - name: Authenticating to github
-        uses:  'google-github-actions/auth@v2'
-        with:
-          workload_identity_provider: 'projects/829709831356/locations/global/workloadIdentityPools/github-workload-identity-pool/providers/github-provider'
-          service_account: 'githubactions-sa@composer-456306.iam.gserviceaccount.com'
-      - name: setup gcloud
-        uses: 'google-github-actions/setup-gcloud@v2'
-        with:
-          version: '>= 363.0.0'
-      - name: listing buckets
-        run: |
-          gcloud storage buckets list
       - name: Commit Updated Version
         if: success()  # Only run this step if all previous steps are successful
         run: |
