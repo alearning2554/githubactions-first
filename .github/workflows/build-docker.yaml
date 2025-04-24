@@ -96,8 +96,8 @@ jobs:
         uses: 'google-github-actions/get-secretmanager-secrets@v2'
         with:
           secrets: |-
-            USERNAME:projects/${{ inputs.project_id }}/secrets/username
-            PASSWORD:projects/${{ inputs.project_id }}/secrets/password
+            USERNAME:projects/829709831356/secrets/username
+            PASSWORD:projects/829709831356/secrets/password
       - name: export secrets to environment variables
         run: |
           echo "USERNAME=${{ steps.secrets.outputs.USERNAME }}" >> $GITHUB_ENV
