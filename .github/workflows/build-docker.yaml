@@ -89,13 +89,13 @@ jobs:
             # Create the keyring directory
             sudo mkdir -p /usr/share/keyrings
 
-            # Download and add Google's public signing key directly to the keyring
-            curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo tee /usr/share/keyrings/cloud.google.gpg > /dev/null
+            # Import the correct public key from Google's GPG repository to the keyrings directory
+            curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/cloud.google.gpg > /dev/null
 
-            # Add the Google Cloud SDK repository, using the keyring for verification
+            # Add the Google Cloud SDK repository, explicitly referencing the keyring for verification
             echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
 
-            # Update and install the gke-gcloud-auth-plugin
+            # Update the package cache and install the gke-gcloud-auth-plugin
             sudo apt-get update && sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
       - name: Configure environment to use GKE plugin
         run: |
