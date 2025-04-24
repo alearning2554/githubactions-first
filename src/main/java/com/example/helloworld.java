@@ -5,8 +5,13 @@ public class helloworld {
         return "Hello, World!";
     }
 
-    public static void main(String[] args) {
-        // Print the message to the console
+    public static void main(String[] args) throws InterruptedException {
+        // Print a message
         System.out.println(getMessage());
+        
+        // Keep container alive indefinitely by sleeping
+        while (true) {
+            Thread.sleep(1000); // Sleep for 1 second (adjust duration if needed)
+        }
     }
 }
