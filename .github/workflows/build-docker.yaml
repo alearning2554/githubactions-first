@@ -119,7 +119,7 @@ jobs:
       - name: deploying application
         run: |
           
-          sed -i "s/image_name/${{ env.IMAGE }}/g" deployment.yaml
+          sed -i "s#image_name#${{ env.IMAGE }}#g" deployment.yaml
           kubectl apply -f k8s/*
           kubectl rollout status deployment myapp
       - name: Commit Updated Version
