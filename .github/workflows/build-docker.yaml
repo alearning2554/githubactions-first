@@ -136,7 +136,7 @@ jobs:
           gcloud container clusters get-credentials ${{ env.cluster_name }} --region ${{ env.region }} --project ${{ inputs.project_id }}
       - name: creating kubernets secret contains jfrod artifactory details
         run: |
-          #kubectl delete secret jfrog-docker-secret
+          kubectl delete secret jfrog-docker-secret
           kubectl create secret docker-registry jfrog-docker-secret \
             --docker-server=artifactory987.jfrog.io \
             --docker-username=${{ env.USERNAME }} \
@@ -144,7 +144,7 @@ jobs:
       - name: deploying application
         run: |
           sed -i "s#image_name#${{ env.IMAGE }}#g" k8s/deployment.yaml
-          kubectl apply -f k8s/*
+          kubectl apply -f k8s/
           kubectl rollout status deployment myapp
       - name: Commit Updated Version
         if: success()  # Only run this step if all previous steps are successful
