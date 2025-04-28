@@ -1,0 +1,40 @@
+name: 'getting version'
+description: 'retrieving version'
+inputs:
+  INCREMENT_TYPE:
+    description: "increment type"
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    # Read the current version from the VERSION file
+      - name: retrieving version
+        shell: bash
+        run: |  
+          if [[ -f ./VERSION ]]; then
+            CURRENT_VERSION=$(cat ./VERSION)
+          else
+            echo "VERSION file not found, initializing with 0.0.0"
+            CURRENT_VERSION="0.0.0"
+          fi
+          echo "Current version: ${CURRENT_VERSION}"
+
+          # Increment the patch version
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          if [[ "$INCREMENT_TYPE" == "MAJOR" ]]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ "$INCREMENT_TYPE" == "MINOR" ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else # Default to PATCH
+            PATCH=$((PATCH + 1))
+            MAJOR=0
+            MINOR=0
+          fi
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "New version: ${NEW_VERSION}"
+
+          # Export as environment variables for later steps
+          echo "version=${NEW_VERSION}" >> $GITHUB_ENV
