@@ -1,0 +1,12 @@
+name: "setup gcloud"
+description: "set up gcloud"
+runs:
+  using: "composite"
+  steps:
+    - name: Install gke-gcloud-auth-plugin and configure plugin
+      uses: ./.github/actions/gke-gcloud-auth-plugin
+    - name: Authenticating to gcp
+      uses:  'google-github-actions/auth@v2'
+      with:
+          workload_identity_provider: 'projects/829709831356/locations/global/workloadIdentityPools/github-workload-identity-pool/providers/github-provider'
+          service_account: 'githubactions-sa@composer-456306.iam.gserviceaccount.com'
