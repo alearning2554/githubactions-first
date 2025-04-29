@@ -141,13 +141,12 @@ jobs:
           helm version
       - name: Debug Chart Directory
         run: |
-          ls -al                  # Lists files in the current directory
-          ls ./helm-chart         # Specifically confirms the `helm-chart` directory exists
+          ls -al                  # Lists files in the current directory         # Specifically confirms the `helm-chart` directory exists
       - name: Deploy Using Helm
         run: |
           DOCKER_CONFIG_JSON=$(echo -n "{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$(echo -n \"${{ env.USERNAME }}:${{ env.PASSWORD }}\" | base64)\"}}}" | base64)
 
-          helm upgrade --install myapp ./helm-chart \
+          helm upgrade --install myapp helm-chart \
             --set image.repository=${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }} \
             --set image.tag=${{ env.version }} \
             --set dockerConfigJson=$DOCKER_CONFIG_JSON \
