@@ -141,7 +141,9 @@ jobs:
           helm version
       - name: Debug Chart Directory
         run: |
-          ls -al                  # Lists files in the current directory         # Specifically confirms the `helm-chart` directory exists
+          ls -al                  # Lists files in the current directory onfirms the `helm-chart` directory exists
+          ls -al ./helm-chart
+          cat ./helm-chart/Chart.yaml
       - name: Deploy Using Helm
         run: |
           DOCKER_CONFIG_JSON=$(echo -n "{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$(echo -n \"${{ env.USERNAME }}:${{ env.PASSWORD }}\" | base64)\"}}}" | base64)
