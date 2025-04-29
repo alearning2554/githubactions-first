@@ -141,7 +141,7 @@ jobs:
           helm version
       - name: Debug Chart Directory
         run: |
-          find . -type d -name "helm"
+          cat $GITHUB_WORKSPACE/helm/Chart.yaml
       - name: Deploy Using Helm
         run: |
           DOCKER_CONFIG_JSON=$(echo -n "{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$(echo -n \"${{ env.USERNAME }}:${{ env.PASSWORD }}\" | base64)\"}}}" | base64)
