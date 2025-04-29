@@ -139,6 +139,10 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
           helm version
+      - name: Debug Chart Directory
+        run: |
+          ls -al                  # Lists files in the current directory
+          ls ./helm-chart         # Specifically confirms the `helm-chart` directory exists
       - name: Deploy Using Helm
         run: |
           DOCKER_CONFIG_JSON=$(echo -n "{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$(echo -n \"${{ env.USERNAME }}:${{ env.PASSWORD }}\" | base64)\"}}}" | base64)
