@@ -134,18 +134,21 @@ jobs:
         run: |
           echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
           gcloud container clusters get-credentials ${{ env.cluster_name }} --region ${{ env.region }} --project ${{ inputs.project_id }}
-      - name: creating kubernets secret contains jfrod artifactory details
+      # Step 9: Install Helm
+      - name: Install Helm
         run: |
-          kubectl delete secret jfrog-docker-secret
-          kubectl create secret docker-registry jfrog-docker-secret \
-            --docker-server=artifactory987.jfrog.io \
-            --docker-username=${{ env.USERNAME }} \
-            --docker-password=${{ env.PASSWORD }}
-      - name: deploying application
+          curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          helm version
+      - name: Deploy Using Helm
         run: |
-          sed -i "s#image_name#${{ env.IMAGE }}#g" k8s/deployment.yaml
-          kubectl apply -f k8s/
-          kubectl rollout status deployment myapp
+          DOCKER_CONFIG_JSON=$(echo -n "{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$(echo -n \"${{ env.USERNAME }}:${{ env.PASSWORD }}\" | base64)\"}}}" | base64)
+
+          helm upgrade --install myapp ./helm-chart \
+            --set image.repository=${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }} \
+            --set image.tag=${{ env.version }} \
+            --set dockerConfigJson=$DOCKER_CONFIG_JSON \
+            --namespace default \
+            --atomic
       - name: Commit Updated Version
         if: success()  # Only run this step if all previous steps are successful
         run: |
