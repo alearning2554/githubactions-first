@@ -144,8 +144,15 @@ jobs:
           cat $GITHUB_WORKSPACE/helm/Chart.yaml
       - name: Deploy Using Helm
         run: |
-          DOCKER_CONFIG_JSON=$(echo -n "{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$(echo -n \"${{ env.USERNAME }}:${{ env.PASSWORD }}\" | base64)\"}}}" | base64)
-          helm upgrade myapp ./helm --install
+          AUTH=$(echo -n "${{ env.USERNAME }}:${{ env.PASSWORD }}" | base64)
+          DOCKER_CONFIG_JSON="{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$AUTH\"}}}"
+
+          helm upgrade myapp ./helm --install \
+          --set image.repository=${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }} \
+          --set image.tag=${{ env.version }} \
+          --set dockerConfigJson="$DOCKER_CONFIG_JSON" \
+          --namespace default \
+          --atomic
           # helm upgrade myapp $GITHUB_WORKSPACE/helm --install \
           #   --set image.repository=${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }} \
           #   --set image.tag=${{ env.version }} \
