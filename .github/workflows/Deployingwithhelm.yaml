@@ -147,14 +147,13 @@ jobs:
           AUTH=$(echo -n "${{ env.USERNAME }}:${{ env.PASSWORD }}" | base64)
           echo "AUTH: $AUTH"
           DOCKER_CONFIG_JSON="{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$AUTH\"}}}"
-          echo "${DOCKER_CONFIG_JSON}" > docker-config.json
+          echo "$DOCKER_CONFIG_JSON" > docker-config.json
           helm upgrade myapp ./helm --install \
+            --values docker-config.json \
             --set image.repository="${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }}" \
             --set image.tag="${{ env.version }}" \
-            --set dockerConfigJson="$(cat docker-config.json)" \
             --namespace default \
-            --atomic \
-            --debug
+            --atomic
           # helm upgrade myapp $GITHUB_WORKSPACE/helm --install \
           #   --set image.repository=${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }} \
           #   --set image.tag=${{ env.version }} \

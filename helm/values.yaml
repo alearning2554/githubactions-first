@@ -1,4 +1,4 @@
 image:
   repository: "image_name"
   tag: "latest"
-dockerConfigJson: ""
+dockerConfigJson: {}
