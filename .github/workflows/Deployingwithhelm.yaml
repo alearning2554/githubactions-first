@@ -142,6 +142,7 @@ jobs:
       - name: Debug Chart Directory
         run: |
           ls -al                  # Lists files in the current directory onfirms the `helm-chart` directory exists
+          find . -type d -name "helm-chart"
           ls -al helm-chart
           cat ./helm-chart/Chart.yaml
       - name: Deploy Using Helm
