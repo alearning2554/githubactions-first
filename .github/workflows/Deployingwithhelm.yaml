@@ -147,7 +147,7 @@ jobs:
         run: |
           DOCKER_CONFIG_JSON=$(echo -n "{\"auths\":{\"${{ env.jfrog_url }}\":{\"username\":\"${{ env.USERNAME }}\",\"password\":\"${{ env.PASSWORD }}\",\"auth\":\"$(echo -n \"${{ env.USERNAME }}:${{ env.PASSWORD }}\" | base64)\"}}}" | base64)
 
-          helm upgrade --install myapp ./helm-chat \
+          helm upgrade --install myapp helm \
             --set image.repository=${{ env.jfrog_url }}/${{ env.repopath }}/${{ env.appname }} \
             --set image.tag=${{ env.version }} \
             --set dockerConfigJson=$DOCKER_CONFIG_JSON \
