@@ -1,4 +1,4 @@
-name: Build and Deploy to JFrog Artifactory with Docker
+name: Build and deploying into k8s with helm
 
 on:
   workflow_dispatch:
